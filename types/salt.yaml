@@ -23,17 +23,17 @@ node_types:
           implementation: script.script_runner.tasks.run
           inputs:
             script_path:
-              default: https://raw.githubusercontent.com/kemiz/salt-cfy3/3.2m8/scripts/install-salt.sh
+              default: https://raw.githubusercontent.com/kemiz/salt-cfy3/3.2m8/scripts/install-saltmaster.sh
         start:
           implementation: script.script_runner.tasks.run
           inputs:
             script_path:
-              default: https://raw.githubusercontent.com/kemiz/salt-cfy3/3.2m8/scripts/start-salt.sh
+              default: https://raw.githubusercontent.com/kemiz/salt-cfy3/3.2m8/scripts/start-saltmaster.sh
         stop:
           implementation: script.script_runner.tasks.run
           inputs:
             script_path:
-              default: https://raw.githubusercontent.com/kemiz/salt-cfy3/3.2m8/scripts/stop-salt.sh
+              default: https://raw.githubusercontent.com/kemiz/salt-cfy3/3.2m8/scripts/stop-saltmaster.sh
 
 relationships:
 
