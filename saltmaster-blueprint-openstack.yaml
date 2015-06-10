@@ -40,6 +40,9 @@ node_templates:
 
   salt_host:
     type: monitoredhosts.openstack.nodes.MonitoredServer
+    properties:
+      port1: { get_input: saltmaster_port1 }
+      port2: { get_input: saltmaster_port2 }
     relationships:
       - target: redis_security_group
         type: cloudify.openstack.server_connected_to_security_group

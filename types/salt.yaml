@@ -11,7 +11,10 @@ node_types:
   salt.nodes.SaltMaster:
     derived_from: cloudify.nodes.SoftwareComponent
     properties:
-      port:
+      port1:
+        description: salt port
+        type: integer
+      port2:
         description: salt port
         type: integer
     interfaces:
