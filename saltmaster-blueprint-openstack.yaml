@@ -31,7 +31,7 @@ inputs:
     description: >
       saltmaster_port1
 
-  saltmaster_port1:
+  saltmaster_port2:
     default: 4506
     description: >
       saltmaster_port1
@@ -40,15 +40,15 @@ node_templates:
 
   salt_host:
     type: monitoredhosts.openstack.nodes.MonitoredServer
-    properties:
-      port1: { get_input: saltmaster_port1 }
-      port2: { get_input: saltmaster_port2 }
     relationships:
-      - target: redis_security_group
+      - target: salt_security_group
         type: cloudify.openstack.server_connected_to_security_group
 
   salt:
     type: salt.nodes.SaltMaster
+    properties:
+      port1: { get_input: saltmaster_port1 }
+      port2: { get_input: saltmaster_port2 }
     relationships:
       - type: cloudify.relationships.contained_in
         target: salt_host
