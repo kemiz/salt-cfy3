@@ -8,6 +8,20 @@
 
 node_types:
 
+  salt.nodes.SaltMinion:
+    derived_from: cloudify.nodes.SoftwareComponent
+    properties:
+      state_name:
+        description: salt state name to execute
+        type: string
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create: 
+          implementation: script.script_runner.tasks.run
+          inputs:
+            script_path:
+              default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/install-salt-minion.sh
+
   salt.nodes.SaltMaster:
     derived_from: cloudify.nodes.SoftwareComponent
     properties:

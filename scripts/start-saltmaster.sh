@@ -1,3 +1,3 @@
 #!/bin/bash
 ctx logger info "Starting salt-master"
-sudo service salt-master start
+# sudo service salt-master start

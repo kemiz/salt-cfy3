@@ -17,6 +17,6 @@ fi
 
 echo "auto_accept: True" | sudo tee -a /etc/salt/master
 
-chkconfig salt-master on
+# chkconfig salt-master on
 
 ctx logger info "salt-master installed succesfully"
