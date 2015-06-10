@@ -1,0 +1,71 @@
+###########################################################
+# This Blueprint installs the Grafana
+# on an openstack cloud environment.
+###########################################################
+
+tosca_definitions_version: cloudify_dsl_1_0
+
+imports:
+  - http://www.getcloudify.org/spec/cloudify/3.2m8/types.yaml
+  - http://www.getcloudify.org/spec/openstack-plugin/1.2m8/plugin.yaml
+  - http://www.getcloudify.org/spec/diamond-plugin/1.2m8/plugin.yaml
+  - https://raw.githubusercontent.com/kemiz/monitored-server-cfy3/master/types/monitored-server-types.yaml
+  - types/salt.yaml
+
+inputs:
+
+  image:
+    description: >
+      Image to be used when launching agent VM's
+
+  flavor:
+    description: >
+      Flavor of the agent VM's
+
+  agent_user:
+    description: >
+      User for connecting to agent VM's
+
+  saltmaster_port1:
+    default: 4505
+    description: >
+      saltmaster_port1
+
+  saltmaster_port1:
+    default: 4506
+    description: >
+      saltmaster_port1
+
+node_templates:
+
+  salt_host:
+    type: monitoredhosts.openstack.nodes.MonitoredServer
+    relationships:
+      - target: redis_security_group
+        type: cloudify.openstack.server_connected_to_security_group
+
+  salt:
+    type: salt.nodes.SaltMaster
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: salt_host
+
+  ###########################################################
+  # A security group to enable access to the salt master host
+  # using the port of the salt master node.
+  #
+  # We need this so that applications can
+  # comminicate with salt master, since they are running on
+  # different hosts.
+  ###########################################################
+
+  salt_security_group:
+    type: cloudify.openstack.nodes.SecurityGroup
+    properties:
+      security_group:
+        name: salt_security_group
+      rules:
+        - remote_ip_prefix: 0.0.0.0/0
+          port: { get_input: saltmaster_port1}
+        - remote_ip_prefix: 0.0.0.0/0
+          port: { get_input: saltmaster_port2}
