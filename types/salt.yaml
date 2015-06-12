@@ -5,6 +5,19 @@
 # these types are mapped to scripts that are resposible
 # for the lifecycle operation.
 ################################################################
+plugins:
+
+    salt-cfy3-plugin:
+        executor: host_agent
+        source: https://github.com/kemiz/salt-cfy3-plugin/archive/3.2m8.zip
+
+workflows:
+
+    execute_state:
+        mapping: salt-simple-plugin.salt_workflows.basic_workflows.execute_state
+        parameters:
+            state_name:
+              default: highstate
 
 node_types:
 
@@ -12,8 +25,12 @@ node_types:
     derived_from: cloudify.nodes.SoftwareComponent
     properties:
       state_name:
-        description: salt state name to execute
         type: string
+        description: salt state name to execute on starting of node
+      salt_master:
+        type: string
+        description: > 
+          Salt master host to connect to
     interfaces:
       cloudify.interfaces.lifecycle:
         create: 
@@ -21,6 +38,11 @@ node_types:
           inputs:
             script_path:
               default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/install-salt-minion.sh
+        start:
+          implementation: script.script_runner.tasks.run
+          inputs:
+            script_path:
+              default: https://raw.githubusercontent.com/kemiz/logstash-cfy3/3.2m8/scripts/start-salt-minion.sh
 
   salt.nodes.SaltMaster:
     derived_from: cloudify.nodes.SoftwareComponent
@@ -37,22 +59,27 @@ node_types:
           implementation: script.script_runner.tasks.run
           inputs:
             script_path:
-              default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/install-saltmaster.sh
+              default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/install-salt-master.sh
         start:
           implementation: script.script_runner.tasks.run
           inputs:
             script_path:
-              default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/start-saltmaster.sh
+              default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/start-salt-master.sh
         stop:
           implementation: script.script_runner.tasks.run
           inputs:
             script_path:
-              default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/stop-saltmaster.sh
+              default: https://raw.githubusercontent.com/kemiz/salt-master-cfy3/3.2m8/scripts/stop-salt-master.sh
 
 relationships:
 
   connected_to_saltmaster:
     derived_from: cloudify.relationships.connected_to
+    properties:
+      salt_master:
+        type: string
+        description: > 
+          Salt master host to connect to
     # target_interfaces:
       # cloudify.interfaces.relationship_lifecycle:
       #   postconfigure:
